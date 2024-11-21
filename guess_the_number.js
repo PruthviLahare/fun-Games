@@ -38,14 +38,16 @@ function getValidityMsg(userChoice, rangeStart, rangeEnd, secretNumber, remainin
     return "🥳🤩Bravo! You've nailed it. The number was " + secretNumber + "!";
   }
 
-  const avg = (rangeStart + rangeEnd) / 2;
-
-  if (userChoice < avg) {
+  if (userChoice < secretNumber - 10) {
     console.log(userChoice + " ⬇️ Too low! Try a higher number.");
   }
 
-  if (userChoice > avg) {
+  if (userChoice > secretNumber + 10) {
     console.log(userChoice + "⬆️ Too high! Try a smaller number.");
+  }
+
+  if (userChoice > secretNumber - 10 && userChoice < secretNumber + 10) {
+    console.log(userChoice + "🤫 Ohh! You are closer.");
   }
 
   return userTurn(remainingAttempts - 1, rangeStart, rangeEnd, secretNumber);
@@ -53,7 +55,7 @@ function getValidityMsg(userChoice, rangeStart, rangeEnd, secretNumber, remainin
 
 function startGame(rangeStart, rangeEnd, maxAttempts) {
   const secretNumber = generateSecretNumber(rangeStart, rangeEnd);
-  // console.log(secretNumber);
+  console.log(secretNumber);
 
   welcomeMsg(rangeStart, rangeEnd, maxAttempts);
 
