@@ -1,5 +1,5 @@
 const welcome = '!!!Welcome to ROCK PAPER SCISSOR game 😃!!!';
-const intro = 'Enter :\n1 - Paper\n2 - Scissor\n3 - Rock';
+const intro = 'Enter :\n1 - Paper 📄\n2 - Scissor ✂️\n3 - Rock 🪨';
 
 function getALine(length) {
   let line = '';
@@ -24,7 +24,19 @@ function instruction() {
 }
 
 function userTurn() {
-  return prompt("What would you like to choose ?");
+  return +prompt("What would you like to choose ?");
+  // printArticle(userChoice, 'your choice');
+}
+
+function printArticle(choice, msg) {
+  switch (choice) {
+    case 1: return console.log(msg + ' :- 📄');
+    case 2: return console.log(msg + ' :- ✂️');
+    case 3: return console.log(msg + ' :- 🪨');
+
+    default: console.log('Please Enter Valid Input !!');
+      return userTurn();
+  }
 }
 
 function computerTurn() {
@@ -33,25 +45,32 @@ function computerTurn() {
 
 function whoWins(user, computer) {
   if (user === computer) {
-    return "It's a Tie 🙃";
+    return "\nIt's a Tie 🙃\n";
   }
 
   if (user === 2 && computer === 1 || user === 3 && computer === 2 || user === 1 && computer === 3) {
-    return "Congrats!! You Won🏆";
+    return "\nCongrats!! You Won 🏆\n";
   }
 
-  return "Ohh!You Lost..";
+  return "\nOhh!You Lost..\n";
 }
+
 
 function startGame() {
   welcomeMsg(welcome);
   instruction();
-  const userChoice = userTurn();
-  const computerChoice = computerTurn();
-  console.log(computerChoice);
+  let wouldLiketiPlayAgain = true;
 
-  console.log(whoWins(userChoice, computerChoice));
+  while (wouldLiketiPlayAgain) {
+    const userChoice = userTurn();
 
+    const computerChoice = computerTurn();
+    printArticle(computerChoice, 'computer choice');
+
+    console.log(whoWins(userChoice, computerChoice));
+
+    wouldLiketiPlayAgain = confirm('Would you Like to Play Again ?');
+  }
 }
 
 startGame();
