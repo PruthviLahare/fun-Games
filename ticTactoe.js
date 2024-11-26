@@ -1,25 +1,15 @@
-const winningChance1 = '123'; //conditions
-const winningChance2 = '456';
-const winningChance3 = '789';
-const winningChance4 = '147';
-const winningChance5 = '258';
-const winningChance6 = '369';
-const winningChance7 = '159';
-const winningChance8 = '357';
-
-
 function getNextChar(currentIndex, match, currentCharacter, replacement) {
   return currentIndex === match ? replacement : currentCharacter;
 }
 
 function replace(text, matchIndex, replacement) {
-  let replaceText = '';
+  let replacedText = '';
 
   for (let index = 0; index <= text.length; index++) {
-    replaceText += getNextChar(index, matchIndex, text[index], replacement);
+    replacedText += getNextChar(index, matchIndex, text[index], replacement);
   }
 
-  return replaceText;
+  return replacedText;
 }
 
 function board(choice) {
@@ -43,39 +33,32 @@ function isSubset(str, set) {
     for (let setIndex = 0; setIndex < set.length; setIndex++) {
       if (str[index] === set[setIndex]) {
         noOfElementMatched += 1;
-        break;
+        // break;
       }
-      if (setIndex === set.length - 1) {
-        return false;
-      }
+      // if (setIndex === set.length - 1) {
+      //   return false;
+      // }
     }
   }
-  return true;
+  // return true;
+  return noOfElementMatched === 3;
 }
 
-function didPlayerWin(str, winner) {
+function didPlayerWin(str) {
   if (str.length === 0) {
     return false;
   }
-  
-  let win = isSubset(winningChance1, str);
-  win = win || isSubset(winningChance2, str);
-  win = win || isSubset(winningChance3, str);
-  win = win || isSubset(winningChance4, str);
-  win = win || isSubset(winningChance5, str);
-  win = win || isSubset(winningChance6, str);
-  win = win || isSubset(winningChance7, str);
-  win = win || isSubset(winningChance8, str);
+  if (isSubset('123', str) || isSubset('456', str) || isSubset('789', str)) {
+    return true;
+  }
+  if (isSubset('147', str) || isSubset('258', str) || isSubset('369', str)) {
+    return true;
+  }
+  if (isSubset('159', str) || isSubset('357', str)) {
+    return true;
+  }
 
-  return win;
-}
-
-function XTurn() {
-  return prompt("X : ");
-}
-
-function YTurn() {
-  return prompt("Y : ");
+  return false;
 }
 
 function getMark(Xturn) {
@@ -90,42 +73,75 @@ function getNewBoard(boardPlaceValue, currentTurn, whoseTurn) {
   return replace(boardPlaceValue, currentTurn - 1, getMark(isDivisible(whoseTurn, 2)));
 }
 
-function getPlayerChoice(whoseTurn) {
-  return isDivisible(whoseTurn, 2) ? XTurn() : YTurn();
+function getPlayerMove(symbol) {
+  return prompt(symbol + ' :-');
 }
 
+function getPlayerChoice(whoseTurn) {
+  const playerSymbol = isDivisible(whoseTurn, 2) ? "X" : "Y";
+  return getPlayerMove(playerSymbol)
+}
+
+// getBoard(player1Moves, player2Moves);
+
 function getBoard(placeValue, currentChoice, whoseTurn) {
-  const newPlaceValue = getNewBoard(placeValue, currentChoice, whoseTurn); 
+  const newPlaceValue = getNewBoard(placeValue, currentChoice, whoseTurn);
   console.log(board(newPlaceValue));
   return newPlaceValue;
 }
 
+
+function getResult(player1Moves, player2Moves) {
+  const string = 'Winner is : ';
+
+  if (didPlayerWin(player1Moves)) {
+    return string + 'player 1';
+  }
+  if (didPlayerWin(player2Moves)) {
+    return string + 'player 2';
+  }
+
+  return "It's a tie";
+}
+
+function isInputValid(choice, placeValue) {
+  return isSubset(choice, placeValue);
+}
+
+function isGameInPlay(player1Moves, player2Moves) {
+  const movesOver = player1Moves.length + player2Moves.length;
+
+  return movesOver < 9 && !(didPlayerWin(player1Moves) || didPlayerWin(player2Moves));
+}
+
 function startGame() {
-  let player1 = ''; 
-  let player2 = ''; 
-  let winner = 'tie';
+  let player1Moves = '';
+  let player2Moves = '';
   let placeValue = '123456789';
-  let whoseTurn = 0;
+  let nextTurn = 0;
 
-  board(placeValue);
+  console.log(board(placeValue));
 
-  for (let turn = 1; turn < 9; turn++) { 
-    const choice = getPlayerChoice(whoseTurn); 
+  while (isGameInPlay(player1Moves, player2Moves)) {
+    const choice = getPlayerChoice(nextTurn);
 
-    isDivisible(whoseTurn, 2) ? player1 += choice : player2 += choice;
+    // if (!isInputValid(choice, placeValue)) {
+    //   console.log("Please Enter Valid Input");
+    //   continue;
+    // }
+    if (isDivisible(nextTurn, 2)) {
+      player1Moves += choice;
+    } else {
+      player2Moves += choice;
+    }
 
     console.clear();
 
-    placeValue = getBoard(placeValue, choice, whoseTurn);
-    whoseTurn += 1;
-
-    if (didPlayerWin(player1, 'X') || didPlayerWin(player2, 'O')) {
-      // winner = 'X';
-      break;
-    }
+    placeValue = getBoard(placeValue, choice, nextTurn);
+    nextTurn += 1;
   }
 
-  console.log("Winner is : " + winner);
+  console.log(getResult(player1Moves, player2Moves));
 }
 
 startGame();
